@@ -112,33 +112,33 @@ export const Home = ({ onNavigate }: HomeProps) => {
   ];
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-6 pb-8 px-2 sm:px-0">
       {/* Welcome Section */}
-      <div className="text-center py-8">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+      <div className="text-center py-6 sm:py-8">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
           Welcome to FitTrack
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-base sm:text-lg">
           Your fitness journey starts here
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         {stats.map((stat, index) => (
           <Card key={index} className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                     {stat.title}
                   </p>
-                  <p className="text-3xl font-bold">
+                  <p className="text-2xl sm:text-3xl font-bold">
                     {stat.value}
                   </p>
                 </div>
-                <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                <div className={`p-2 sm:p-3 rounded-full ${stat.bgColor} self-end sm:self-center`}>
+                  <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
                 </div>
               </div>
             </CardContent>
@@ -148,27 +148,27 @@ export const Home = ({ onNavigate }: HomeProps) => {
 
       {/* Quick Actions */}
       <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
             Quick Actions
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <CardContent className="pt-0">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {quickActions.map((action, index) => (
               <Button
                 key={index}
                 variant="ghost"
-                className="h-auto p-6 flex flex-col items-center gap-3 hover:scale-105 transition-all duration-300 border border-border hover:border-primary/20"
+                className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 sm:gap-3 hover:scale-105 transition-all duration-300 border border-border hover:border-primary/20"
                 onClick={action.action}
               >
-                <div className={`p-4 rounded-full ${action.color} text-white`}>
-                  <action.icon className="h-6 w-6" />
+                <div className={`p-3 sm:p-4 rounded-full ${action.color} text-white`}>
+                  <action.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div className="text-center">
-                  <p className="font-semibold mb-1">{action.title}</p>
-                  <p className="text-xs text-muted-foreground">{action.description}</p>
+                  <p className="font-semibold text-xs sm:text-sm mb-1">{action.title}</p>
+                  <p className="text-xs text-muted-foreground hidden sm:block">{action.description}</p>
                 </div>
               </Button>
             ))}
@@ -179,23 +179,23 @@ export const Home = ({ onNavigate }: HomeProps) => {
       {/* Upcoming Schedules */}
       {upcomingSchedules.length > 0 && (
         <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
               Upcoming Schedule
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="space-y-3">
               {upcomingSchedules.map((schedule, index) => (
-                <div key={index} className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                <div key={index} className="flex items-center justify-between p-3 sm:p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-full bg-primary/10">
-                      <Calendar className="h-4 w-4 text-primary" />
+                      <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium">{schedule.workout}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-medium text-sm sm:text-base">{schedule.workout}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {new Date(schedule.date).toLocaleDateString('en-US', {
                           weekday: 'short',
                           month: 'short',
@@ -204,13 +204,13 @@ export const Home = ({ onNavigate }: HomeProps) => {
                       </p>
                     </div>
                   </div>
-                  <Badge variant="outline">Scheduled</Badge>
+                  <Badge variant="outline" className="text-xs">Scheduled</Badge>
                 </div>
               ))}
               
               <Button
                 variant="ghost"
-                className="w-full justify-between"
+                className="w-full justify-between text-sm"
                 onClick={() => onNavigate('schedule')}
               >
                 View all schedules
@@ -223,21 +223,21 @@ export const Home = ({ onNavigate }: HomeProps) => {
 
       {/* Recent Activity Placeholder */}
       <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Activity className="h-4 w-4 sm:h-5 sm:w-5" />
             Keep Going!
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <div className="bg-gradient-to-br from-primary/10 to-blue-600/10 rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-              <Target className="h-8 w-8 text-primary" />
+        <CardContent className="pt-0">
+          <div className="text-center py-6 sm:py-8">
+            <div className="bg-gradient-to-br from-primary/10 to-blue-600/10 rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center">
+              <Target className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             </div>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
               Start tracking your fitness journey today
             </p>
-            <Button onClick={() => onNavigate('workouts')} className="btn-primary">
+            <Button onClick={() => onNavigate('workouts')} className="btn-primary text-sm sm:text-base">
               Begin Your First Workout
             </Button>
           </div>

@@ -113,63 +113,89 @@
 
 @layer components {
   .card-hover {
-    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98];
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/5 active:scale-[0.98] hover:-translate-y-1;
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:from-primary/80 active:to-blue-600/80 text-white transition-all duration-200 shadow-lg hover:shadow-xl active:shadow-md;
+    @apply bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:from-primary/80 active:to-blue-600/80 text-white transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/25 active:shadow-md hover:scale-105 active:scale-95;
   }
   
   .btn-success {
-    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 active:from-green-700 active:to-green-800 text-white transition-all duration-200 shadow-lg hover:shadow-xl active:shadow-md;
+    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 active:from-green-700 active:to-green-800 text-white transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-green-500/25 active:shadow-md hover:scale-105 active:scale-95;
   }
   
   .spotify-card {
-    @apply bg-card/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-card/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] hover:-translate-y-2 group cursor-pointer;
+  }
+  
+  .spotify-card-content {
+    @apply transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-primary/5 group-hover:to-blue-600/5;
   }
   
   .gradient-text {
     @apply bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* Mobile-first button styles */
+  /* Enhanced button styles with Spotify-like effects */
   .mobile-button {
-    @apply min-h-[44px] min-w-[44px] active:scale-95 transition-transform duration-150;
+    @apply min-h-[44px] min-w-[44px] active:scale-95 hover:scale-105 transition-all duration-300 hover:shadow-lg;
   }
 
   /* Touch-friendly interactive elements */
   .touch-target {
-    @apply min-h-[44px] flex items-center justify-center;
+    @apply min-h-[44px] flex items-center justify-center transition-all duration-300 hover:bg-accent/50 hover:scale-105 rounded-lg;
+  }
+
+  /* Spotify-style interactive elements */
+  .spotify-hover {
+    @apply transition-all duration-300 hover:bg-accent/10 hover:scale-105 hover:shadow-lg rounded-lg cursor-pointer;
+  }
+
+  .spotify-glow {
+    @apply hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500;
+  }
+
+  /* Modern glassmorphism effect */
+  .glass-effect {
+    @apply bg-background/70 backdrop-blur-xl border border-white/10 shadow-xl;
   }
 }
 
-/* Custom scrollbar for webkit browsers */
+/* Enhanced scrollbar with modern styling */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+  background: hsl(var(--muted)/0.3);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground));
-  border-radius: 3px;
+  background: linear-gradient(to bottom, hsl(var(--primary)), hsl(var(--primary))/0.8);
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary));
+  background: linear-gradient(to bottom, hsl(var(--primary))/0.9, hsl(var(--primary))/0.7);
+  box-shadow: 0 0 10px hsl(var(--primary))/0.3;
 }
 
-/* Mobile-specific styles */
+/* Mobile-specific styles with enhanced touch interactions */
 @media (max-width: 640px) {
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+  
+  /* Enhanced mobile touch feedback */
+  .spotify-card {
+    @apply hover:scale-[1.01] active:scale-[0.99];
+  }
 }
 
-/* Improve touch interactions on mobile */
+/* Improved touch interactions for mobile */
 @media (hover: none) and (pointer: coarse) {
   .hover\:scale-105:hover {
     transform: scale(1);
@@ -178,4 +204,24 @@
   .hover\:scale-105:active {
     transform: scale(0.98);
   }
+  
+  .spotify-card:hover {
+    transform: scale(1);
+  }
+  
+  .spotify-card:active {
+    transform: scale(0.98);
+    transition-duration: 150ms;
+  }
+}
+
+/* Smooth animations for better UX */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced focus styles for accessibility */
+button:focus-visible,
+[role="button"]:focus-visible {
+  @apply ring-2 ring-primary ring-offset-2 ring-offset-background outline-none;
 }

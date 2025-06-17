@@ -2,16 +2,17 @@
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Home } from 'lucide-react';
 import { WorkoutTracker } from '@/components/WorkoutTracker';
 import { MealLogger } from '@/components/MealLogger';
 import { FavoritesSection } from '@/components/FavoritesSection';
 import { TrainingSchedule } from '@/components/TrainingSchedule';
+import { Home as HomePage } from '@/components/Home';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [activeTab, setActiveTab] = useState('workouts');
+  const [activeTab, setActiveTab] = useState('home');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -40,6 +41,10 @@ const Index = () => {
     });
   };
 
+  const navigateToTab = (tab: string) => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="min-h-screen w-full">
       {/* Header */}
@@ -47,7 +52,13 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-primary">FitTrack</h1>
+              <Button
+                variant="ghost"
+                className="text-2xl font-bold text-primary hover:bg-transparent p-0"
+                onClick={() => setActiveTab('home')}
+              >
+                FitTrack
+              </Button>
               <span className="text-sm text-muted-foreground hidden sm:inline">
                 Your Personal Fitness Companion
               </span>
@@ -73,7 +84,11 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsTrigger value="home" className="text-xs sm:text-sm">
+              <Home className="h-4 w-4 mr-1" />
+              Home
+            </TabsTrigger>
             <TabsTrigger value="workouts" className="text-xs sm:text-sm">
               Workouts
             </TabsTrigger>
@@ -87,6 +102,10 @@ const Index = () => {
               Schedule
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="home" className="animate-fade-in">
+            <HomePage onNavigate={navigateToTab} />
+          </TabsContent>
 
           <TabsContent value="workouts" className="animate-fade-in">
             <WorkoutTracker />

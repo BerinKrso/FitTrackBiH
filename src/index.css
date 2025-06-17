@@ -90,21 +90,47 @@
   }
 
   body {
-    @apply bg-gradient-animated bg-400% text-foreground font-sans;
-    animation: gradient-shift 6s ease-in-out infinite;
+    @apply bg-gradient-to-br from-background via-background to-background/95 text-foreground font-sans;
+    background-attachment: fixed;
   }
 }
 
 @layer components {
   .card-hover {
-    @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-lg;
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl;
   }
   
   .btn-primary {
-    @apply bg-fittrack-blue hover:bg-blue-600 text-white transition-colors duration-200;
+    @apply bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white transition-all duration-200 shadow-lg hover:shadow-xl;
   }
   
   .btn-success {
-    @apply bg-fittrack-green hover:bg-green-600 text-white transition-colors duration-200;
+    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white transition-all duration-200 shadow-lg hover:shadow-xl;
   }
+  
+  .spotify-card {
+    @apply bg-card/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
 }

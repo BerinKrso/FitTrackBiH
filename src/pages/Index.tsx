@@ -1,23 +1,22 @@
 
 import { useState, useEffect } from 'react';
+import { LoginModal } from '@/components/LoginModal';
+import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Home, LogIn, LogOut, User } from 'lucide-react';
+import { Moon, Sun, Home, LogOut, User } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { WorkoutTracker } from '@/components/WorkoutTracker';
 import { MealLogger } from '@/components/MealLogger';
 import { FavoritesSection } from '@/components/FavoritesSection';
 import { TrainingSchedule } from '@/components/TrainingSchedule';
 import { Home as HomePage } from '@/components/Home';
-import { LoginModal } from '@/components/LoginModal';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const { user, login, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -59,9 +58,38 @@ const Index = () => {
     setActiveTab(tab);
   };
 
+  // If not authenticated, show the login interface directly
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen w-full bg-background">
+        {/* Dark mode toggle - positioned absolutely */}
+        <div className="absolute top-4 right-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleDarkMode}
+            className="h-9 w-9"
+            aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+          >
+            {isDarkMode ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+
+        {/* Main login interface */}
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <LoginModal isOpen={true} onClose={() => {}} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full">
-      {/* Header */}
+      {/* Header for authenticated users */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex h-14 sm:h-16 items-center justify-between">
@@ -98,33 +126,19 @@ const Index = () => {
             
             {/* Right side controls */}
             <div className="flex items-center space-x-2">
-              {isAuthenticated ? (
-                <>
-                  <div className="hidden sm:flex items-center space-x-2 mr-2">
-                    <User className="h-4 w-4" />
-                    <span className="text-sm text-muted-foreground">{user?.name}</span>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="flex items-center space-x-1"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => setShowLoginModal(true)}
-                  className="flex items-center space-x-1"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>Sign In</span>
-                </Button>
-              )}
+              <div className="hidden sm:flex items-center space-x-2 mr-2">
+                <User className="h-4 w-4" />
+                <span className="text-sm text-muted-foreground">{user?.name}</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="flex items-center space-x-1"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
               
               <Button
                 variant="ghost"
@@ -146,92 +160,65 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {isAuthenticated ? (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-6 sm:mb-8 h-12 sm:h-10 bg-muted/50 backdrop-blur-sm">
-              <TabsTrigger 
-                value="home" 
-                className="text-xs sm:text-sm p-2 sm:p-3"
-              >
-                <Home className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                <span className="hidden sm:inline">Home</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="workouts" 
-                className="text-xs sm:text-sm p-2 sm:p-3"
-              >
-                <span className="hidden sm:inline">Workouts</span>
-                <span className="sm:hidden">Work</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="meals" 
-                className="text-xs sm:text-sm p-2 sm:p-3"
-              >
-                Meals
-              </TabsTrigger>
-              <TabsTrigger 
-                value="favorites" 
-                className="text-xs sm:text-sm p-2 sm:p-3"
-              >
-                <span className="hidden sm:inline">Favorites</span>
-                <span className="sm:hidden">Fav</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="schedule" 
-                className="text-xs sm:text-sm p-2 sm:p-3"
-              >
-                <span className="hidden sm:inline">Schedule</span>
-                <span className="sm:hidden">Sched</span>
-              </TabsTrigger>
-            </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-5 mb-6 sm:mb-8 h-12 sm:h-10 bg-muted/50 backdrop-blur-sm">
+            <TabsTrigger 
+              value="home" 
+              className="text-xs sm:text-sm p-2 sm:p-3"
+            >
+              <Home className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Home</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="workouts" 
+              className="text-xs sm:text-sm p-2 sm:p-3"
+            >
+              <span className="hidden sm:inline">Workouts</span>
+              <span className="sm:hidden">Work</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="meals" 
+              className="text-xs sm:text-sm p-2 sm:p-3"
+            >
+              Meals
+            </TabsTrigger>
+            <TabsTrigger 
+              value="favorites" 
+              className="text-xs sm:text-sm p-2 sm:p-3"
+            >
+              <span className="hidden sm:inline">Favorites</span>
+              <span className="sm:hidden">Fav</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="schedule" 
+              className="text-xs sm:text-sm p-2 sm:p-3"
+            >
+              <span className="hidden sm:inline">Schedule</span>
+              <span className="sm:hidden">Sched</span>
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="home">
-              <HomePage onNavigate={navigateToTab} />
-            </TabsContent>
+          <TabsContent value="home">
+            <HomePage onNavigate={navigateToTab} />
+          </TabsContent>
 
-            <TabsContent value="workouts">
-              <WorkoutTracker />
-            </TabsContent>
+          <TabsContent value="workouts">
+            <WorkoutTracker />
+          </TabsContent>
 
-            <TabsContent value="meals">
-              <MealLogger />
-            </TabsContent>
+          <TabsContent value="meals">
+            <MealLogger />
+          </TabsContent>
 
-            <TabsContent value="favorites">
-              <FavoritesSection />
-            </TabsContent>
+          <TabsContent value="favorites">
+            <FavoritesSection />
+          </TabsContent>
 
-            <TabsContent value="schedule">
-              <TrainingSchedule />
-            </TabsContent>
-          </Tabs>
-        ) : (
-          <div className="text-center py-12">
-            <div className="max-w-md mx-auto">
-              <Logo size="lg" className="mx-auto mb-6" />
-              <h1 className="text-3xl font-bold mb-4">Welcome to FitTrack</h1>
-              <p className="text-muted-foreground mb-8">
-                Your personal fitness companion. Track workouts, log meals, and achieve your fitness goals.
-              </p>
-              <Button
-                size="lg"
-                onClick={() => setShowLoginModal(true)}
-                className="w-full"
-              >
-                <LogIn className="h-4 w-4 mr-2" />
-                Get Started - Sign In
-              </Button>
-            </div>
-          </div>
-        )}
+          <TabsContent value="schedule">
+            <TrainingSchedule />
+          </TabsContent>
+        </Tabs>
       </main>
-
-      {/* Login Modal */}
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLogin={login}
-      />
     </div>
   );
 };

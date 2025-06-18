@@ -2,18 +2,22 @@
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Home } from 'lucide-react';
+import { Moon, Sun, Home, LogIn, LogOut, User } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { WorkoutTracker } from '@/components/WorkoutTracker';
 import { MealLogger } from '@/components/MealLogger';
 import { FavoritesSection } from '@/components/FavoritesSection';
 import { TrainingSchedule } from '@/components/TrainingSchedule';
 import { Home as HomePage } from '@/components/Home';
+import { LoginModal } from '@/components/LoginModal';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { user, login, logout, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -42,6 +46,15 @@ const Index = () => {
     });
   };
 
+  const handleLogout = () => {
+    logout();
+    setActiveTab('home');
+    toast({
+      title: "Logged out",
+      description: "See you next time!",
+    });
+  };
+
   const navigateToTab = (tab: string) => {
     setActiveTab(tab);
   };
@@ -56,10 +69,10 @@ const Index = () => {
             <div className="hidden sm:flex items-center space-x-4">
               <Button
                 variant="ghost"
-                className="flex items-center space-x-2 text-xl font-bold text-primary hover:bg-transparent hover:scale-105 transition-all duration-300 p-0 group"
+                className="flex items-center space-x-2 text-xl font-bold text-primary p-0 group"
                 onClick={() => setActiveTab('home')}
               >
-                <Logo size="md" className="group-hover:scale-110 transition-transform duration-300" />
+                <Logo size="md" />
                 <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                   FitTrack
                 </span>
@@ -73,94 +86,152 @@ const Index = () => {
             <div className="sm:hidden flex-1 flex justify-center">
               <Button
                 variant="ghost"
-                className="flex items-center space-x-2 text-lg font-bold text-primary hover:bg-transparent hover:scale-105 transition-all duration-300 p-0 group"
+                className="flex items-center space-x-2 text-lg font-bold text-primary p-0 group"
                 onClick={() => setActiveTab('home')}
               >
-                <Logo size="sm" className="group-hover:scale-110 transition-transform duration-300" />
+                <Logo size="sm" />
                 <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                   FitTrack
                 </span>
               </Button>
             </div>
             
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleDarkMode}
-              className="h-8 w-8 sm:h-9 sm:w-9 hover:scale-110 hover:bg-accent/50 transition-all duration-300"
-              aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
-            >
-              {isDarkMode ? (
-                <Sun className="h-4 w-4 transition-transform duration-300" />
+            {/* Right side controls */}
+            <div className="flex items-center space-x-2">
+              {isAuthenticated ? (
+                <>
+                  <div className="hidden sm:flex items-center space-x-2 mr-2">
+                    <User className="h-4 w-4" />
+                    <span className="text-sm text-muted-foreground">{user?.name}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="flex items-center space-x-1"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </Button>
+                </>
               ) : (
-                <Moon className="h-4 w-4 transition-transform duration-300" />
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setShowLoginModal(true)}
+                  className="flex items-center space-x-1"
+                >
+                  <LogIn className="h-4 w-4" />
+                  <span>Sign In</span>
+                </Button>
               )}
-            </Button>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleDarkMode}
+                className="h-8 w-8 sm:h-9 sm:w-9"
+                aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+              >
+                {isDarkMode ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6 sm:mb-8 h-12 sm:h-10 bg-muted/50 backdrop-blur-sm">
-            <TabsTrigger 
-              value="home" 
-              className="text-xs sm:text-sm p-2 sm:p-3 hover:scale-105 transition-all duration-300 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-            >
-              <Home className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-              <span className="hidden sm:inline">Home</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="workouts" 
-              className="text-xs sm:text-sm p-2 sm:p-3 hover:scale-105 transition-all duration-300 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-            >
-              <span className="hidden sm:inline">Workouts</span>
-              <span className="sm:hidden">Work</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="meals" 
-              className="text-xs sm:text-sm p-2 sm:p-3 hover:scale-105 transition-all duration-300 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-            >
-              Meals
-            </TabsTrigger>
-            <TabsTrigger 
-              value="favorites" 
-              className="text-xs sm:text-sm p-2 sm:p-3 hover:scale-105 transition-all duration-300 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-            >
-              <span className="hidden sm:inline">Favorites</span>
-              <span className="sm:hidden">Fav</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="schedule" 
-              className="text-xs sm:text-sm p-2 sm:p-3 hover:scale-105 transition-all duration-300 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-            >
-              <span className="hidden sm:inline">Schedule</span>
-              <span className="sm:hidden">Sched</span>
-            </TabsTrigger>
-          </TabsList>
+        {isAuthenticated ? (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-5 mb-6 sm:mb-8 h-12 sm:h-10 bg-muted/50 backdrop-blur-sm">
+              <TabsTrigger 
+                value="home" 
+                className="text-xs sm:text-sm p-2 sm:p-3"
+              >
+                <Home className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
+                <span className="hidden sm:inline">Home</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="workouts" 
+                className="text-xs sm:text-sm p-2 sm:p-3"
+              >
+                <span className="hidden sm:inline">Workouts</span>
+                <span className="sm:hidden">Work</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="meals" 
+                className="text-xs sm:text-sm p-2 sm:p-3"
+              >
+                Meals
+              </TabsTrigger>
+              <TabsTrigger 
+                value="favorites" 
+                className="text-xs sm:text-sm p-2 sm:p-3"
+              >
+                <span className="hidden sm:inline">Favorites</span>
+                <span className="sm:hidden">Fav</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="schedule" 
+                className="text-xs sm:text-sm p-2 sm:p-3"
+              >
+                <span className="hidden sm:inline">Schedule</span>
+                <span className="sm:hidden">Sched</span>
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="home" className="animate-fade-in">
-            <HomePage onNavigate={navigateToTab} />
-          </TabsContent>
+            <TabsContent value="home">
+              <HomePage onNavigate={navigateToTab} />
+            </TabsContent>
 
-          <TabsContent value="workouts" className="animate-fade-in">
-            <WorkoutTracker />
-          </TabsContent>
+            <TabsContent value="workouts">
+              <WorkoutTracker />
+            </TabsContent>
 
-          <TabsContent value="meals" className="animate-fade-in">
-            <MealLogger />
-          </TabsContent>
+            <TabsContent value="meals">
+              <MealLogger />
+            </TabsContent>
 
-          <TabsContent value="favorites" className="animate-fade-in">
-            <FavoritesSection />
-          </TabsContent>
+            <TabsContent value="favorites">
+              <FavoritesSection />
+            </TabsContent>
 
-          <TabsContent value="schedule" className="animate-fade-in">
-            <TrainingSchedule />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="schedule">
+              <TrainingSchedule />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto">
+              <Logo size="lg" className="mx-auto mb-6" />
+              <h1 className="text-3xl font-bold mb-4">Welcome to FitTrack</h1>
+              <p className="text-muted-foreground mb-8">
+                Your personal fitness companion. Track workouts, log meals, and achieve your fitness goals.
+              </p>
+              <Button
+                size="lg"
+                onClick={() => setShowLoginModal(true)}
+                className="w-full"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Get Started - Sign In
+              </Button>
+            </div>
+          </div>
+        )}
       </main>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLogin={login}
+      />
     </div>
   );
 };

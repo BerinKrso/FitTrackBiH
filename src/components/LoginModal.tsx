@@ -50,62 +50,59 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
     setIsLoading(true);
     
+    // For sign up - send verification email first
     if (isSignUp && !verificationSent) {
-      // Simulate sending verification email
       setTimeout(() => {
         setVerificationSent(true);
         setIsLoading(false);
         toast({
           title: "Verification Email Sent",
-          description: "Please check your email and click the verification link",
+          description: "Please check your email and click verify below to simulate email verification",
         });
       }, 1000);
       return;
     }
 
-    // Simulate email verification check for sign up
-    if (isSignUp && verificationSent && !isVerified) {
+    // For verified sign up or regular sign in - proceed with authentication
+    if (!isSignUp || (isSignUp && isVerified)) {
       setTimeout(() => {
-        setIsVerified(true);
+        const user = {
+          id: Date.now().toString(),
+          email,
+          name: email.split('@')[0],
+          provider: 'email' as const
+        };
+        
+        // Set remember me duration
+        const userData = JSON.stringify(user);
+        if (rememberMe) {
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + 30);
+          localStorage.setItem('fittrack-user', userData);
+          localStorage.setItem('fittrack-user-expiry', expiryDate.toISOString());
+        } else {
+          localStorage.setItem('fittrack-user', userData);
+          localStorage.removeItem('fittrack-user-expiry');
+        }
+        
+        login(user);
+        onClose();
         setIsLoading(false);
+        
         toast({
-          title: "Email Verified!",
-          description: "Your account has been verified. You can now sign in.",
+          title: "Welcome!",
+          description: isSignUp ? "Account created successfully!" : "Successfully logged in",
         });
       }, 1000);
-      return;
-    }
-
-    // Handle actual login/signup
-    setTimeout(() => {
-      const user = {
-        id: Date.now().toString(),
-        email,
-        name: email.split('@')[0],
-        provider: 'email' as const
-      };
-      
-      // Set remember me duration
-      const userData = JSON.stringify(user);
-      if (rememberMe) {
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 30);
-        localStorage.setItem('fittrack-user', userData);
-        localStorage.setItem('fittrack-user-expiry', expiryDate.toISOString());
-      } else {
-        localStorage.setItem('fittrack-user', userData);
-        localStorage.removeItem('fittrack-user-expiry');
-      }
-      
-      login(user);
-      onClose();
+    } else {
+      // Sign up but not verified yet
       setIsLoading(false);
-      
       toast({
-        title: "Welcome!",
-        description: isSignUp ? "Account created successfully!" : "Successfully logged in",
+        title: "Email Verification Required",
+        description: "Please verify your email first by clicking the verify button below",
+        variant: "destructive",
       });
-    }, 1000);
+    }
   };
 
   const handleGoogleAuth = () => {
@@ -147,8 +144,17 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setIsVerified(true);
     toast({
       title: "Email Verified!",
-      description: "You can now complete your registration",
+      description: "Your email has been verified. You can now complete your registration.",
     });
+  };
+
+  const resetForm = () => {
+    setIsSignUp(!isSignUp);
+    setVerificationSent(false);
+    setIsVerified(false);
+    setConfirmPassword('');
+    setEmail('');
+    setPassword('');
   };
 
   // Main login interface without dialog wrapper when used as main screen
@@ -233,20 +239,26 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
           {/* Verification status for sign up */}
           {isSignUp && verificationSent && (
-            <div className="p-4 border rounded-lg space-y-3">
+            <div className="p-4 border rounded-lg space-y-3 bg-muted/50">
               <div className="flex items-center space-x-2">
                 {isVerified ? (
                   <>
                     <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span className="text-sm text-green-600">Email verified!</span>
+                    <span className="text-sm text-green-600 font-medium">Email verified! ✓</span>
                   </>
                 ) : (
                   <>
-                    <AlertCircle className="h-5 w-5 text-yellow-500" />
-                    <span className="text-sm text-yellow-600">Verification email sent</span>
+                    <AlertCircle className="h-5 w-5 text-amber-500" />
+                    <span className="text-sm text-amber-600 font-medium">Verification email sent</span>
                   </>
                 )}
               </div>
+              <p className="text-xs text-muted-foreground">
+                {isVerified 
+                  ? "You can now complete your registration below."
+                  : "In a real app, you would click a link in your email. For testing, click the button below:"
+                }
+              </p>
               {!isVerified && (
                 <Button
                   type="button"
@@ -255,7 +267,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                   onClick={simulateVerification}
                   className="w-full"
                 >
-                  Simulate Email Verification
+                  ✉️ Simulate Email Verification
                 </Button>
               )}
             </div>
@@ -281,12 +293,11 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             <Mail className="w-4 h-4 mr-2" />
             {isLoading ? (
               isSignUp && !verificationSent ? 'Sending verification...' : 
-              isSignUp && verificationSent && !isVerified ? 'Verify email first' :
               'Signing in...'
             ) : (
               isSignUp ? 
                 verificationSent && isVerified ? 'Complete Registration' :
-                verificationSent ? 'Verify Email' : 'Sign Up' 
+                verificationSent ? 'Please verify email first' : 'Send Verification Email' 
               : 'Sign In'
             )}
           </Button>
@@ -296,12 +307,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             <Button
               type="button"
               variant="link"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setVerificationSent(false);
-                setIsVerified(false);
-                setConfirmPassword('');
-              }}
+              onClick={resetForm}
               disabled={isLoading}
             >
               {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}

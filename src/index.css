@@ -125,7 +125,7 @@
   }
   
   .spotify-card {
-    @apply bg-card/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] hover:-translate-y-2 group cursor-pointer;
+    @apply bg-card/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] hover:-translate-y-2 cursor-pointer;
   }
   
   .spotify-card-content {

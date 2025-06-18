@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -89,21 +90,12 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-background via-background to-background/95 text-foreground font-sans;
-    background-attachment: fixed;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, sans-serif;
   }
 
-  /* Allow text selection for inputs and content areas */
   input, textarea, [contenteditable] {
     -webkit-user-select: text;
-    -khtml-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
@@ -112,136 +104,64 @@
 
 @layer components {
   .card-hover {
-    @apply transition-all duration-200 hover:scale-[1.01] hover:shadow-xl active:scale-[0.99] hover:-translate-y-0.5;
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply border border-border shadow-sm;
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:from-primary/80 active:to-blue-600/80 text-white transition-all duration-200 shadow-lg hover:shadow-xl active:shadow-md hover:scale-[1.02] active:scale-[0.98];
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply bg-primary text-primary-foreground;
   }
   
   .btn-success {
-    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 active:from-green-700 active:to-green-800 text-white transition-all duration-200 shadow-lg hover:shadow-xl active:shadow-md hover:scale-[1.02] active:scale-[0.98];
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply bg-green-600 text-white;
   }
   
   .spotify-card {
-    @apply bg-card border border-border/50 shadow-md hover:shadow-xl transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:-translate-y-0.5 cursor-pointer;
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply bg-card border border-border shadow-sm cursor-pointer;
   }
   
   .spotify-card-content {
-    @apply transition-all duration-200 group-hover:bg-gradient-to-br group-hover:from-primary/3 group-hover:to-blue-600/3;
+    @apply bg-card;
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent;
+    @apply text-primary;
   }
 
-  /* Enhanced button styles with clear hover effects */
   .mobile-button {
-    @apply min-h-[44px] min-w-[44px] active:scale-95 hover:scale-[1.02] transition-all duration-200 hover:shadow-md;
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply min-h-[44px] min-w-[44px];
   }
 
-  /* Touch-friendly interactive elements */
   .touch-target {
-    @apply min-h-[44px] flex items-center justify-center transition-all duration-200 hover:bg-accent/30 hover:scale-[1.02] rounded-lg;
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply min-h-[44px] flex items-center justify-center rounded-lg;
   }
 
-  /* Spotify-style interactive elements with clear effects */
   .spotify-hover {
-    @apply transition-all duration-200 hover:bg-accent/8 hover:scale-[1.01] hover:shadow-md rounded-lg cursor-pointer;
-    transform-origin: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    @apply rounded-lg cursor-pointer;
   }
 
   .spotify-glow {
-    @apply hover:shadow-xl transition-all duration-300;
+    @apply shadow-sm;
   }
 
-  /* Modern clear glass effect */
   .glass-effect {
-    @apply bg-background/90 border border-border/30 shadow-lg;
+    @apply bg-background border border-border shadow-sm;
   }
 }
 
-/* Enhanced scrollbar with modern styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted)/0.3);
-  border-radius: 4px;
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, hsl(var(--primary)), hsl(var(--primary))/0.8);
+  background: hsl(var(--primary));
   border-radius: 4px;
-  transition: all 0.3s ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, hsl(var(--primary))/0.9, hsl(var(--primary))/0.7);
-  box-shadow: 0 0 10px hsl(var(--primary))/0.3;
-}
-
-/* Mobile-specific styles with enhanced touch interactions */
-@media (max-width: 640px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  /* Enhanced mobile touch feedback */
-  .spotify-card {
-    @apply hover:scale-100 active:scale-[0.99];
-  }
-}
-
-/* Improved touch interactions for mobile */
-@media (hover: none) and (pointer: coarse) {
-  .hover\:scale-105:hover {
-    transform: scale(1);
-  }
-  
-  .hover\:scale-105:active {
-    transform: scale(0.98);
-  }
-  
-  .spotify-card:hover {
-    transform: scale(1);
-  }
-  
-  .spotify-card:active {
-    transform: scale(0.98);
-    transition-duration: 150ms;
-  }
-}
-
-/* Smooth animations for better UX */
-* {
-  scroll-behavior: smooth;
-}
-
-/* Enhanced focus styles for accessibility */
 button:focus-visible,
 [role="button"]:focus-visible {
-  @apply ring-2 ring-primary ring-offset-2 ring-offset-background outline-none;
+  @apply ring-2 ring-primary ring-offset-2 outline-none;
 }
